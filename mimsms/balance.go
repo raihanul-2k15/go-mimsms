@@ -1,23 +1,32 @@
 package mimsms
 
 import (
+	"encoding/json"
 	"fmt"
-	"strings"
 )
 
 func (c *Client) GetBalance() (string, error) {
-	body, err := c.sendRequest("GET", fmt.Sprintf("/miscapi/%s/getBalance", c.apiKey), map[string]string{})
+	body, err := c.sendRequest("GET", "/", map[string]string{
+		"balance":  "1",
+		"apikey":   c.apiKey,
+		"apitoken": c.apiToken,
+	})
 	if err != nil {
 		return "", err
 	}
 
-	parts := strings.Split(body, "BDT")
-	if len(parts) != 2 {
-		return "", fmt.Errorf("Balance Parse Failure, Original Response: %s", body)
+	var balanceResp struct {
+		Balance string `json:"balance"`
+	}
+	err = json.Unmarshal([]byte(body), &balanceResp)
+
+	if err != nil {
+		return "", err
 	}
 
-	balance := strings.Trim(parts[1], " ")
-	balance = strings.Replace(balance, ",", "", -1)
+	if balanceResp.Balance == "" {
+		return "", fmt.Errorf("API Error: %s, Original Response: %s", "Balance is empty", body)
+	}
 
-	return balance, nil
+	return balanceResp.Balance, nil
 }

@@ -7,18 +7,19 @@ import (
 )
 
 type Client struct {
-	apiKey  string
-	baseUrl string
+	apiKey   string
+	apiToken string
+	baseUrl  string
 
 	httpClient *http.Client
 }
 
-func NewClient(apiKey string) *Client {
-	hc := &http.Client{Timeout: 30 * time.Second}
+func NewClient(apiKey, apiToken string) *Client {
 	return &Client{
 		apiKey:     apiKey,
-		baseUrl:    "https://isms.mimsms.com",
-		httpClient: hc,
+		apiToken:   apiToken,
+		baseUrl:    "http://mimsms.com.bd/smsAPI",
+		httpClient: &http.Client{Timeout: 30 * time.Second},
 	}
 }
 

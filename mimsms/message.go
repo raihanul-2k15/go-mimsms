@@ -1,62 +1,52 @@
 package mimsms
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
 
-type contentType struct {
-	val string
-}
-
-type messageType struct {
-	val string
-}
-
-var (
-	ContentTypeText    = contentType{"text"}
-	ContentTypeUnicode = contentType{"unicode"}
-)
-
-var (
-	MessageTypeTransactional = messageType{"transactional"}
-	MessageTypePromotional   = messageType{"promotional"}
-)
-
-func (t *contentType) String() string {
-	return t.val
-}
-
-func (t *messageType) String() string {
-	return t.val
-}
-
-func (c *Client) SendMessage(sender string, recipients []string, msg string, contentType contentType, messageType messageType) (string, error) {
+func (c *Client) SendMessage(sender string, recipients []string, msg string) (string, error) {
 	sender = "88" + cleanPhoneNumber(sender)
 	contacts := prepareRecipientsArray(recipients)
 	query := map[string]string{
-		"api_key":  c.apiKey,
-		"senderid": sender,
-		"type":     contentType.val,
-		"label":    messageType.val,
-		"contacts": contacts,
-		"msg":      msg,
+		"sendsms":  "1",
+		"type":     "sms",
+		"apikey":   c.apiKey,
+		"apitoken": c.apiToken,
+		"from":     sender,
+		"to":       contacts,
+		"text":     msg,
 	}
 
-	body, err := c.sendRequest("POST", "/smsapi", query)
+	body, err := c.sendRequest("POST", "/", query)
 	if err != nil {
 		return "", err
 	}
 
-	return extractShootId(body)
+	return extractGroupId(body)
 }
 
-func extractShootId(body string) (string, error) {
-	parts := strings.Split(body, "- ")
-	if len(parts) < 2 {
-		return "", fmt.Errorf("ID Parse Failure, Original Response: %s", body)
+type groupIdResponse struct {
+	Request string `json:"request"`
+	Status  string `json:"status"`
+	GroupId string `json:"group_id"`
+	Date    string `json:"date"`
+}
+
+func extractGroupId(body string) (string, error) {
+	var jsonResp groupIdResponse
+	err := json.Unmarshal([]byte(body), &jsonResp)
+	if err != nil {
+		return "", err
 	}
-	return strings.Trim(parts[1], " "), nil
+
+	if jsonResp.GroupId == "" {
+		errMsg := jsonResp.Request + ": " + jsonResp.Status
+		return "", fmt.Errorf("API Error: %s, Original Response: %s", errMsg, body)
+	}
+
+	return jsonResp.GroupId, nil
 }
 
 func prepareRecipientsArray(recipients []string) string {
