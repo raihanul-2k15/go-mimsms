@@ -20,7 +20,7 @@ go get github.com/raihanul-2k15/go-mimsms
 ### Send SMS
 
 ```go
-import "github.com/raihanul-2k15/go-mimsms/mimsms"
+import "github.com/raihanul-2k15/go-mimsms/v2/mimsms"
 
 apiKey := "yourapikeyhere"
 apiToken := "apitoken"
@@ -37,7 +37,7 @@ fmt.Println(groupId)
 ### Check Balance
 
 ```go
-import "github.com/raihanul-2k15/go-mimsms/mimsms"
+import "github.com/raihanul-2k15/go-mimsms/v2/mimsms"
 
 apiKey := "yourapikeyhere"
 apiToken := "apitoken"
