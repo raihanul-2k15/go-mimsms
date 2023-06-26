@@ -51,6 +51,13 @@ if err != nil {
 fmt.Println(balance)
 ```
 
+### Set timeout for request
+
+```go
+client := mimsms.NewClient(...)
+client.SetTimeout(30 * time.Second)W
+```
+
 ## Disclaimer
 
 Author is not affiliated with MIM SMS

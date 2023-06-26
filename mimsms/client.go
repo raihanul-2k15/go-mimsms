@@ -12,6 +12,7 @@ type client struct {
 	apiToken string
 	baseUrl  string
 
+	timeout    time.Duration
 	httpClient *http.Client
 }
 
@@ -20,8 +21,14 @@ func NewClient(apiKey, apiToken string) *client {
 		apiKey:     apiKey,
 		apiToken:   apiToken,
 		baseUrl:    "http://mimsms.com.bd/smsAPI",
-		httpClient: &http.Client{Timeout: 30 * time.Second},
+		httpClient: &http.Client{Timeout: 60 * time.Second},
 	}
+}
+
+func (c *client) SetTimeout(dur time.Duration) *client {
+	c.timeout = dur
+	c.httpClient.Timeout = dur
+	return c
 }
 
 func (c *client) sendRequest(method string, path string, query map[string]string) (string, error) {
