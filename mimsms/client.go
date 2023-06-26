@@ -1,6 +1,7 @@
 package mimsms
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"time"
@@ -24,6 +25,10 @@ func NewClient(apiKey, apiToken string) *client {
 }
 
 func (c *client) sendRequest(method string, path string, query map[string]string) (string, error) {
+	if c.apiKey == "" || c.apiToken == "" {
+		return "", errors.New("apiKey or apiToken is empty")
+	}
+
 	req, err := http.NewRequest(method, c.baseUrl+path, nil)
 	if err != nil {
 		return "", c.safeError(err)
