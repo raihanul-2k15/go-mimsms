@@ -28,7 +28,7 @@ func isResponseError(resp string) error {
 	return nil
 }
 
-func (c *Client) safeError(err error) error {
+func (c *client) safeError(err error) error {
 	if err == nil {
 		return nil
 	}

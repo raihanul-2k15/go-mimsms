@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func (c *Client) SendMessage(sender string, recipients []string, msg string) (string, error) {
+func (c *client) SendMessage(sender string, recipients []string, msg string) (string, error) {
 	sender = "88" + cleanPhoneNumber(sender)
 	contacts := prepareRecipientsArray(recipients)
 	query := map[string]string{

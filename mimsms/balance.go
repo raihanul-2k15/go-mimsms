@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (c *Client) GetBalance() (string, error) {
+func (c *client) GetBalance() (string, error) {
 	body, err := c.sendRequest("GET", "/", map[string]string{
 		"balance":  "1",
 		"apikey":   c.apiKey,

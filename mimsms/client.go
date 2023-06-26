@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type Client struct {
+type client struct {
 	apiKey   string
 	apiToken string
 	baseUrl  string
@@ -14,8 +14,8 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func NewClient(apiKey, apiToken string) *Client {
-	return &Client{
+func NewClient(apiKey, apiToken string) *client {
+	return &client{
 		apiKey:     apiKey,
 		apiToken:   apiToken,
 		baseUrl:    "http://mimsms.com.bd/smsAPI",
@@ -23,7 +23,7 @@ func NewClient(apiKey, apiToken string) *Client {
 	}
 }
 
-func (c *Client) sendRequest(method string, path string, query map[string]string) (string, error) {
+func (c *client) sendRequest(method string, path string, query map[string]string) (string, error) {
 	req, err := http.NewRequest(method, c.baseUrl+path, nil)
 	if err != nil {
 		return "", c.safeError(err)
