@@ -26,7 +26,8 @@ apiKey := "yourapikeyhere"
 apiToken := "apitoken"
 client := mimsms.NewClient(apiKey, apiToken)
 
-groupId, err := client.SendMessage("09601234567", []string{"01717171717"}, "Hello World")
+senderId := "09601234567" // must be one of the numbers provided by MIM SMS
+groupId, err := client.SendMessage(senderId, []string{"01717171717"}, "Hello World")
 if err != nil {
     fmt.Println(err)
     return
@@ -55,7 +56,7 @@ fmt.Println(balance)
 
 ```go
 client := mimsms.NewClient(...)
-client.SetTimeout(30 * time.Second)W
+client.SetTimeout(30 * time.Second)
 ```
 
 ## Disclaimer
